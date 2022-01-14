@@ -1,0 +1,5 @@
+HiNotes.sln
+.vs
+HiNotes/bin/
+HiNotes/obj/
+*.user
