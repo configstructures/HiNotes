@@ -78,10 +78,10 @@ namespace HiNotes
             {
                 //MOVE GRABBED TASK WHILE MOVING
                 Point positionInWindow = e.GetPosition(null);
-                bindingTask.TaskPosition = positionInWindow.Y - positionInGrid.Y - 50;
+                bindingTask.TaskPosition = positionInWindow.Y - positionInGrid.Y - gridMain.RowDefinitions[0].Height.Value + scrollViewerTasks.VerticalOffset;
 
                 //SWITCH REST TASKS
-                if(bindingTask.TaskPosition > last_position) //IF MOVING DOWN
+                if (bindingTask.TaskPosition > last_position) //IF MOVING DOWN
                 {
                     if (currentZone < taskListViewModel.TaskList.Count - 1) //IF MOVING TASK IS NOT IN LAST ZONE
                     {
@@ -139,17 +139,6 @@ namespace HiNotes
         private double SetPosition(int zone)
         {
             return 10 + (double)zone * 140.0;
-        }
-
-        private void Debug_ChangeTaskPosition_Click(object sender, RoutedEventArgs e)
-        {
-            //taskListViewModel.TaskList[3].TaskPosition = 300;
-            string str = "";
-            foreach (var item in taskListViewModel.TaskList)
-            {
-                str += item.TaskPosition.ToString() + " ";
-            }
-            d_1.Text = str;
         }
         private void TaskBorder_SizeChanged(object sender, SizeChangedEventArgs e)
         {
