@@ -64,7 +64,7 @@
                               Margin="20 0 20 20">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <Canvas Height="5000"/>
+                            <Canvas Height="{Binding Path=CanvasHeight}"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemContainerStyle>

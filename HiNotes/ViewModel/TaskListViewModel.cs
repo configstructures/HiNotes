@@ -1,16 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace HiNotes
 {
-    public class TaskListViewModel
+    public class TaskListViewModel : INotifyPropertyChanged
     {
         private List<TaskModel> taskListModel;
         public ObservableCollection<TaskViewModel> TaskList { get; set; }
+        private double _canvasHeight;
+        public double CanvasHeight
+        {
+            get { return _canvasHeight; }
+            set { _canvasHeight = value; OnPropertyChanged(nameof(CanvasHeight)); }
+        }
         string path = @"C:\Users\Mateusz\Desktop\FORMAT_1\repos\HiNotes\bin\Debug\net5.0-windows\zadania.xml";
         public TaskListViewModel()
         {
@@ -55,5 +62,11 @@ namespace HiNotes
             (
                 (TaskViewModel t1, TaskViewModel t2) => { return t1.TaskPosition.CompareTo(t2.TaskPosition); }
             );
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string paramName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(paramName));
+        }
     }
 }

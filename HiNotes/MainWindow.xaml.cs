@@ -136,10 +136,6 @@ namespace HiNotes
                 taskListViewModel.SortByPosition();
             }
         }
-        private double SetPosition(int zone)
-        {
-            return 10 + (double)zone * 140.0;
-        }
         private void TaskBorder_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             //PYTANIE SO: czy to dobra metoda na ogarnianie wysokości tasku
@@ -155,9 +151,12 @@ namespace HiNotes
             BindingExpression bindingExpression = tb.GetBindingExpression(TextBox.TextProperty);
             TaskViewModel borderTask = bindingExpression.DataItem as TaskViewModel;
             borderTask.TaskBorderHeight = e.NewSize.Height;
-            //d_1.Text = "task[0].Height = " + taskListViewModel.TaskList[0].TaskBorderHeight.ToString();
 
             UpdateTasksPositions(taskListViewModel.TaskList.IndexOf(borderTask));
+
+            TaskListViewModel dc = DataContext as TaskListViewModel;
+            dc.CanvasHeight = taskListViewModel.TaskList[taskListViewModel.TaskList.Count - 1].TaskPosition +
+                              taskListViewModel.TaskList[taskListViewModel.TaskList.Count - 1].TaskBorderHeight;
         }
         private void UpdateTasksPositions(int taskIdx)
         {
