@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace HiNotes
 {
@@ -27,7 +28,7 @@ namespace HiNotes
             int i = 0;
             foreach (TaskModel task in taskListModel)
             {
-                TaskList.Add(new TaskViewModel { Name = task.Name, Note = task.Note, TaskPosition = i * 140, Zone = i }); //mozliwe ze nie trza tu ustawiac TaskPosition bo po starcie programu i tak wykonuje sie Border_SizeChanged i tam jeszcze raz sie ustalaja TaskPOsitions
+                TaskList.Add(new TaskViewModel { Name = task.Name, Note = task.Note, TaskPosition = i * 140, Zone = i });
                 i++;
             }
         }
@@ -44,7 +45,7 @@ namespace HiNotes
             temporaryList.Sort(comparisonByPosition);
 
             //REPLACE OBSERVABLE COLLECTION WITH SORTED LIST
-            TaskList.Clear();  //moze jakos inczej sie da zeby nie czyscic tej listy bo to chyba troche slabe?
+            TaskList.Clear();
             foreach (TaskViewModel task in temporaryList)
             {
                 TaskList.Add(task);
@@ -54,7 +55,8 @@ namespace HiNotes
             int counter = 0;
             foreach (TaskViewModel task in TaskList)
             {
-                task.TaskPosition = 10 + (counter * 140);
+                task.TaskPosition = task.TaskHomePosition = 10 + (counter * 140);
+                task.Zone = counter;
                 counter++;
             }
         }
@@ -67,6 +69,26 @@ namespace HiNotes
         private void OnPropertyChanged(string paramName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(paramName));
+        }
+
+        private ICommand commandAddNewTask;
+        public ICommand AddNewTask
+        {
+            get
+            {
+                if (commandAddNewTask == null) commandAddNewTask = new CommandAddNewTask(this);
+                return commandAddNewTask;
+            }
+        }
+
+        private ICommand commandDeleteTask;
+        public ICommand DeleteTask
+        {
+            get
+            {
+                if(commandDeleteTask == null) commandDeleteTask = new CommandDeleteTask(this);
+                return commandDeleteTask;
+            }
         }
     }
 }

@@ -25,16 +25,12 @@ namespace HiNotes
             InitializeComponent();
         }
 
-        private void ButtonCloseApp_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
+        private const double taskMargin = 10.0;
         private bool taskMoving = false;
         private Point positionInGrid;
         private TaskViewModel bindingTask;
-        private int movingTaskIdx; //jaka bedzie maksymalna liczba taskow?
-        private int currentZone;   //jaka bedzie maksymalna liczba taskow?
+        private int movingTaskIdx;
+        private int currentZone;
         double last_position = 0;
         int zoneLimitMovingDown;
         int zoneLimitMovingUp;
@@ -138,12 +134,6 @@ namespace HiNotes
         }
         private void TaskBorder_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //PYTANIE SO: czy to dobra metoda na ogarnianie wysokości tasku
-            //d_1.Text = "stara wys.: " + e.PreviousSize.Height.ToString() +
-            //           " nowa: " + e.NewSize.Height.ToString() +
-            //           "\nstara szer.: " + e.PreviousSize.Width.ToString() +
-            //           " nowa: " + e.NewSize.Width.ToString();
-
             Border b = sender as Border;
             Grid g = b.Child as Grid;
             Grid gg = g.Children[0] as Grid;
@@ -151,12 +141,23 @@ namespace HiNotes
             BindingExpression bindingExpression = tb.GetBindingExpression(TextBox.TextProperty);
             TaskViewModel borderTask = bindingExpression.DataItem as TaskViewModel;
             borderTask.TaskBorderHeight = e.NewSize.Height;
+            TaskListViewModel dc = DataContext as TaskListViewModel;
 
             UpdateTasksPositions(taskListViewModel.TaskList.IndexOf(borderTask));
 
-            TaskListViewModel dc = DataContext as TaskListViewModel;
-            dc.CanvasHeight = taskListViewModel.TaskList[taskListViewModel.TaskList.Count - 1].TaskPosition +
-                              taskListViewModel.TaskList[taskListViewModel.TaskList.Count - 1].TaskBorderHeight;
+            //UPDATE CANVAS
+            double neededCanvasHeight = taskListViewModel.TaskList[taskListViewModel.TaskList.Count - 1].TaskPosition +
+                                        taskListViewModel.TaskList[taskListViewModel.TaskList.Count - 1].TaskBorderHeight;
+            double availableSpace = gridMain.ActualHeight - gridMain.RowDefinitions[0].ActualHeight - itemsControl.Margin.Bottom;
+            if (neededCanvasHeight > availableSpace)
+            {
+                dc.CanvasHeight = neededCanvasHeight;
+            }
+            else
+            {
+                dc.CanvasHeight = availableSpace;
+            }
+            
         }
         private void UpdateTasksPositions(int taskIdx)
         {
@@ -164,12 +165,12 @@ namespace HiNotes
             {
                 if (i == 0)
                 {
-                    taskListViewModel.TaskList[i].TaskPosition = 10;
+                    taskListViewModel.TaskList[i].TaskPosition = taskMargin;
                 }
                 else
                 {
                     taskListViewModel.TaskList[i].TaskPosition = taskListViewModel.TaskList[i - 1].TaskPosition +
-                                                                 taskListViewModel.TaskList[i - 1].TaskBorderHeight + 10; //30 to odleglosc miedzy taskmi
+                                                                 taskListViewModel.TaskList[i - 1].TaskBorderHeight + taskMargin;
                 }
                 taskListViewModel.TaskList[i].TaskHomePosition = taskListViewModel.TaskList[i].TaskPosition;
             }
@@ -181,7 +182,7 @@ namespace HiNotes
 
             if (zone == 0)
             {
-                newTaskPosition = 10; //zmienna globalna
+                newTaskPosition = taskMargin;
             }
             else
             {
@@ -189,6 +190,19 @@ namespace HiNotes
             }
             
             return newTaskPosition;
+        }
+
+        private void ButtonMiniApp_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+        private void ButtonMaxApp_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Maximized;
+        }
+        private void ButtonCloseApp_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }
