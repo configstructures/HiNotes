@@ -202,6 +202,12 @@ namespace HiNotes
         }
         private void ButtonCloseApp_Click(object sender, RoutedEventArgs e)
         {
+            List<TaskModel> xmlList = new List<TaskModel>();
+            foreach (TaskViewModel task in taskListViewModel.TaskList)
+            {
+                xmlList.Add(new TaskModel{ Name = task.Name, Note = task.Note});
+            }
+            TasksData.SaveToXml(taskListViewModel.xmlPath, xmlList);
             Close();
         }
     }

@@ -19,10 +19,10 @@ namespace HiNotes
             get { return _canvasHeight; }
             set { _canvasHeight = value; OnPropertyChanged(nameof(CanvasHeight)); }
         }
-        string path = @"C:\Users\Mateusz\Desktop\FORMAT_1\repos\HiNotes\bin\Debug\net5.0-windows\zadania.xml";
+        public string xmlPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\HiNotesTasks.xml";
         public TaskListViewModel()
         {
-            taskListModel = TasksData.ReadFromXml(path);
+            taskListModel = TasksData.ReadFromXml(xmlPath);
 
             TaskList = new ObservableCollection<TaskViewModel>();
             int i = 0;
