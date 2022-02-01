@@ -210,5 +210,29 @@ namespace HiNotes
             TasksData.SaveToXml(taskListViewModel.xmlPath, xmlList);
             Close();
         }
+
+        private void NoteRTB_LostFocus(object sender, RoutedEventArgs e)
+        {
+            RichTextBox rtb = sender as RichTextBox;
+            Grid g = rtb.Parent as Grid;
+            Grid gg = g.Children[0] as Grid;
+            TextBox tb = gg.Children.OfType<TextBox>().FirstOrDefault();
+            BindingExpression bindingExpression = tb.GetBindingExpression(TextBox.TextProperty);
+            TaskViewModel bindingTask = bindingExpression.DataItem as TaskViewModel;
+
+            bindingTask.Note = new TextRange(rtb.Document.ContentStart, rtb.Document.ContentEnd).Text;
+        }
+
+        private void NoteRTB_Loaded(object sender, RoutedEventArgs e)
+        {
+            RichTextBox rtb = sender as RichTextBox;
+            Grid g = rtb.Parent as Grid;
+            Grid gg = g.Children[0] as Grid;
+            TextBox tb = gg.Children.OfType<TextBox>().FirstOrDefault();
+            BindingExpression bindingExpression = tb.GetBindingExpression(TextBox.TextProperty);
+            TaskViewModel bindingTask = bindingExpression.DataItem as TaskViewModel;
+
+            rtb.Document.Blocks.Add(new Paragraph(new Run(bindingTask.Note)));
+        }
     }
 }
